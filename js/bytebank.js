@@ -13,5 +13,32 @@ elementoFormulario.addEventListener("submit", function (event) {
     return;
   }
 
-  alert("Transação em andamento");
+  const inputTipoTransacao = elementoFormulario.querySelector("#tipoTransacao");
+  const inputValor = elementoFormulario.querySelector("#valor");
+  const inputData = elementoFormulario.querySelector("#data");
+
+  let tipoTransacao = inputTipoTransacao.value;
+  let valor = inputValor.value;
+  let data = inputData.value;
+
+  if (tipoTransacao == "Depósito") {
+    saldo += valor;
+  } else if (
+    tipoTransacao == "Transferência" ||
+    tipoTransacao == "Pagamento de Boleto"
+  ) {
+    saldo -= valor;
+  } else {
+    alert("Tipo de Transação é inválido!");
+    return;
+  }
+
+  elementoSaldo.textContent = saldo;
+
+  const novaTransacao = {
+    tipoTransacao: tipoTransacao,
+    valor: valor,
+    data: data,
+  };
+  elementoFormulario.reset();
 });
