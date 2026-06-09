@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "rootDir": "./src/scripts/",
-    "outDir": "./dist/scripts/",
+    "rootDir": "./src/",
+    "outDir": "./dist/",
     "noEmitOnError": true,
     "noEmitHelpers": true,
     "alwaysStrict": true,

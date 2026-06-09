@@ -16,15 +16,16 @@ elementoFormulario.addEventListener("submit", function (event) {
     "#data",
   ) as HTMLInputElement;
 
-  let tipoTransacao = inputTipoTransacao.value;
+  let tipoTransacao: TransactionType =
+    inputTipoTransacao.value as TransactionType;
   let valor: number = inputValor.valueAsNumber;
   let data: Date = new Date(inputData.value);
 
-  if (tipoTransacao == "Depósito") {
+  if (tipoTransacao == TransactionType.DEPOSIT) {
     saldo += valor;
   } else if (
-    tipoTransacao == "Transferência" ||
-    tipoTransacao == "Pagamento de Boleto"
+    tipoTransacao == TransactionType.TRANSFER ||
+    tipoTransacao == TransactionType.PAYMENT_BILL
   ) {
     saldo -= valor;
   } else {
@@ -34,10 +35,11 @@ elementoFormulario.addEventListener("submit", function (event) {
 
   elementoSaldo.textContent = saldo.toString();
 
-  const novaTransacao = {
-    tipoTransacao: tipoTransacao,
-    valor: valor,
-    data: data,
+  const novaTransacao: Transaction = {
+    type: tipoTransacao,
+    value: valor,
+    date: data,
   };
+  console.log(novaTransacao);
   elementoFormulario.reset();
 });
