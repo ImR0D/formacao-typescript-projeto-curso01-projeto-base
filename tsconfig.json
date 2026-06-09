@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "rootDir": "./src/scripts/",
+    "outDir": "./dist/scripts/",
+    "noEmitOnError": true,
+    "noEmitHelpers": true,
+    "alwaysStrict": true,
+    "allowJs": false,
+    "disableSizeLimit": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["./src/**/*"],
+  "compileOnSave": true
+}
