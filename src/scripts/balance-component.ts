@@ -7,7 +7,3 @@ const elementoSaldo = document.querySelector(
 if (elementoSaldo != null) {
   elementoSaldo.textContent = saldo.toString();
 }
-
-const elementoFormulario = document.querySelector(
-  ".block-nova-transacao form",
-) as HTMLFormElement;
