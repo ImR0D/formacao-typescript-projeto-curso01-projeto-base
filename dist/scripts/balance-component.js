@@ -7,5 +7,7 @@ if (elementoSaldo != null) {
 }
 if (elementoDataAcesso != null) {
     const dataAcesso = new Date();
-    elementoDataAcesso.textContent = ToDateFormat(dataAcesso);
+    let dateFormatted = ToDateFormat(dataAcesso, DateFormatLocale.DateWithWeekday);
+    const formattedDateToCapitalizedCase = dateFormatted.replace(dateFormatted.charAt(0), dateFormatted.charAt(0).toUpperCase());
+    elementoDataAcesso.textContent = formattedDateToCapitalizedCase;
 }
