@@ -1,4 +1,8 @@
 function ToDateFormat(date: Date) {
+  if (date == null) {
+    return;
+  }
+
   return date.toLocaleDateString('pt-br', {
     weekday: 'long',
     day: '2-digit',
