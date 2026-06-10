@@ -1,5 +1,4 @@
-"use strict";
-var DateFormatLocale;
+export var DateFormatLocale;
 (function (DateFormatLocale) {
     DateFormatLocale["Extended"] = "Extended";
     DateFormatLocale["DateWithWeekday"] = "DateWithWeekday";

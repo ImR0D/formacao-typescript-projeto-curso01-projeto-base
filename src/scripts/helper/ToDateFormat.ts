@@ -1,3 +1,5 @@
+import { DateFormatLocale } from '../types/DateFormatLocale.js';
+
 const dateFormats: { [key: string]: Intl.DateTimeFormatOptions } = {
   Extended: {
     weekday: 'long',
@@ -43,7 +45,7 @@ const dateFormats: { [key: string]: Intl.DateTimeFormatOptions } = {
   },
 };
 
-function ToDateFormat(
+export default function ToDateFormat(
   date: Date | string,
   format?: DateFormatLocale | undefined,
 ): string {

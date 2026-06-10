@@ -1,4 +1,4 @@
-"use strict";
+import { DateFormatLocale } from '../types/DateFormatLocale.js';
 const dateFormats = {
     Extended: {
         weekday: 'long',
@@ -43,7 +43,7 @@ const dateFormats = {
         formatMatcher: 'best fit',
     },
 };
-function ToDateFormat(date, format) {
+export default function ToDateFormat(date, format) {
     const convDate = new Date(date);
     if (date == null) {
         return '';

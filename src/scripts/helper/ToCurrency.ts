@@ -1,4 +1,4 @@
-function ToCurrency(value: number): string | null {
+export default function ToCurrency(value: number): string | null {
   if (!value) {
     return null;
   }

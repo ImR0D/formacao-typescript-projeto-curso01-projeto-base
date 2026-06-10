@@ -1,5 +1,4 @@
-"use strict";
-function ToCurrency(value) {
+export default function ToCurrency(value) {
     if (!value) {
         return null;
     }

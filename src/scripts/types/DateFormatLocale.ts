@@ -1,4 +1,4 @@
-enum DateFormatLocale {
+export enum DateFormatLocale {
   Extended = 'Extended',
   DateWithWeekday = 'DateWithWeekday',
   WeekDayOnly = 'WeekDayOnly',
