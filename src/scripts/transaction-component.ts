@@ -44,6 +44,7 @@ elementoFormulario.addEventListener('submit', function (event) {
     value: valor,
     date: data,
   };
+
   console.log(novaTransacao);
   elementoFormulario.reset();
 });
