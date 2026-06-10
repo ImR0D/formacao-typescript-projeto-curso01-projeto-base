@@ -1,23 +1,23 @@
 const elementoFormulario = document.querySelector(
-  ".block-nova-transacao form",
+  '.block-nova-transacao form',
 ) as HTMLFormElement;
 
-elementoFormulario.addEventListener("submit", function (event) {
+elementoFormulario.addEventListener('submit', function (event) {
   event.preventDefault();
 
   if (elementoFormulario && !elementoFormulario.checkValidity()) {
-    alert("Preencha todos os campos corretamente para realizar a transação");
+    alert('Preencha todos os campos corretamente para realizar a transação');
     return;
   }
 
   const inputTipoTransacao = elementoFormulario.querySelector(
-    "#tipoTransacao",
+    '#tipoTransacao',
   ) as HTMLSelectElement;
   const inputValor = elementoFormulario.querySelector(
-    "#valor",
+    '#valor',
   ) as HTMLInputElement;
   const inputData = elementoFormulario.querySelector(
-    "#data",
+    '#data',
   ) as HTMLInputElement;
 
   let tipoTransacao: TransactionType =
@@ -33,11 +33,11 @@ elementoFormulario.addEventListener("submit", function (event) {
   ) {
     saldo -= valor;
   } else {
-    alert("Tipo de Transação é inválido!");
+    alert('Tipo de Transação é inválido!');
     return;
   }
 
-  elementoSaldo.textContent = saldo.toString();
+  elementoSaldo.textContent = ToCurrency(saldo);
 
   const novaTransacao: Transaction = {
     type: tipoTransacao,
