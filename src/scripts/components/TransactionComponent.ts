@@ -1,4 +1,5 @@
-import Account from '../models/Account.js';
+import translate from '../helper/Translation/Translate.js';
+import Account from '../models/Account/Account.js';
 import { Transaction } from '../types/Transaction.js';
 import { TransactionType } from '../types/TransactionType.js';
 import SaldoComponent from './BalanceComponent.js';
@@ -7,39 +8,60 @@ const elementoFormulario = document.querySelector(
   '.block-nova-transacao form',
 ) as HTMLFormElement;
 
-elementoFormulario.addEventListener('submit', function (event) {
-  event.preventDefault();
+const elementoErro = document.querySelector(
+  '.block-nova-transacao #transactionError',
+) as HTMLElement;
+const inputTipoTransacao = elementoFormulario.querySelector(
+  '.block-nova-transacao #tipoTransacao',
+) as HTMLSelectElement;
+const inputValor = elementoFormulario.querySelector(
+  '.block-nova-transacao #valor',
+) as HTMLInputElement;
+const inputData = elementoFormulario.querySelector(
+  '.block-nova-transacao #data',
+) as HTMLInputElement;
 
-  if (elementoFormulario && !elementoFormulario.checkValidity()) {
-    alert('Preencha todos os campos corretamente para realizar a transação');
-    return;
+function printTextOnError(message: string, timeout?: number) {
+  let defaultTimeout = 2000;
+  if (!timeout) {
+    timeout = defaultTimeout;
   }
 
-  const inputTipoTransacao = elementoFormulario.querySelector(
-    '#tipoTransacao',
-  ) as HTMLSelectElement;
-  const inputValor = elementoFormulario.querySelector(
-    '#valor',
-  ) as HTMLInputElement;
-  const inputData = elementoFormulario.querySelector(
-    '#data',
-  ) as HTMLInputElement;
+  elementoErro.textContent = translate(message);
 
-  let tipoTransacao: TransactionType =
-    inputTipoTransacao.value as TransactionType;
-  let valor: number = inputValor.valueAsNumber;
-  let data: Date = new Date(inputData.value);
+  setTimeout(() => {
+    elementoErro.textContent = '';
+  }, timeout);
+}
 
-  const novaTransacao: Transaction = {
-    type: tipoTransacao,
-    value: valor,
-    date: data,
-  };
+elementoFormulario.addEventListener('submit', function (event) {
+  event.preventDefault();
+  try {
+    if (elementoFormulario && !elementoFormulario.checkValidity()) {
+      printTextOnError(
+        'Preencha todos os campos corretamente para realizar a transação',
+      );
+      return;
+    }
+    let tipoTransacao: TransactionType =
+      inputTipoTransacao.value as TransactionType;
+    let valor: number = inputValor.valueAsNumber;
+    let data: Date = new Date(inputData.value);
 
-  Account.transaction(novaTransacao);
+    const novaTransacao: Transaction = {
+      type: tipoTransacao,
+      value: valor,
+      date: data,
+    };
 
-  SaldoComponent.renderizarSaldo();
+    Account.transaction(novaTransacao);
+    elementoFormulario.reset();
+  } catch (error) {
+    let eventError: Error = error as Error;
+    let errorMessage = translate(eventError.message);
 
-  console.log('Histórico de transações: ', Account.history());
-  elementoFormulario.reset();
+    printTextOnError(errorMessage, 3000);
+  } finally {
+    SaldoComponent.renderizarSaldo();
+  }
 });

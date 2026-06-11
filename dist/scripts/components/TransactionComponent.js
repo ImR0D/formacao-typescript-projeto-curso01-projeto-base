@@ -1,25 +1,45 @@
-import Account from '../models/Account.js';
+import translate from '../helper/Translation/Translate.js';
+import Account from '../models/Account/Account.js';
 import SaldoComponent from './BalanceComponent.js';
 const elementoFormulario = document.querySelector('.block-nova-transacao form');
+const elementoErro = document.querySelector('.block-nova-transacao #transactionError');
+const inputTipoTransacao = elementoFormulario.querySelector('.block-nova-transacao #tipoTransacao');
+const inputValor = elementoFormulario.querySelector('.block-nova-transacao #valor');
+const inputData = elementoFormulario.querySelector('.block-nova-transacao #data');
+function printTextOnError(message, timeout) {
+    let defaultTimeout = 2000;
+    if (!timeout) {
+        timeout = defaultTimeout;
+    }
+    elementoErro.textContent = translate(message);
+    setTimeout(() => {
+        elementoErro.textContent = '';
+    }, timeout);
+}
 elementoFormulario.addEventListener('submit', function (event) {
     event.preventDefault();
-    if (elementoFormulario && !elementoFormulario.checkValidity()) {
-        alert('Preencha todos os campos corretamente para realizar a transação');
-        return;
+    try {
+        if (elementoFormulario && !elementoFormulario.checkValidity()) {
+            printTextOnError('Preencha todos os campos corretamente para realizar a transação');
+            return;
+        }
+        let tipoTransacao = inputTipoTransacao.value;
+        let valor = inputValor.valueAsNumber;
+        let data = new Date(inputData.value);
+        const novaTransacao = {
+            type: tipoTransacao,
+            value: valor,
+            date: data,
+        };
+        Account.transaction(novaTransacao);
+        elementoFormulario.reset();
     }
-    const inputTipoTransacao = elementoFormulario.querySelector('#tipoTransacao');
-    const inputValor = elementoFormulario.querySelector('#valor');
-    const inputData = elementoFormulario.querySelector('#data');
-    let tipoTransacao = inputTipoTransacao.value;
-    let valor = inputValor.valueAsNumber;
-    let data = new Date(inputData.value);
-    const novaTransacao = {
-        type: tipoTransacao,
-        value: valor,
-        date: data,
-    };
-    Account.transaction(novaTransacao);
-    SaldoComponent.renderizarSaldo();
-    console.log('Histórico de transações: ', Account.history());
-    elementoFormulario.reset();
+    catch (error) {
+        let eventError = error;
+        let errorMessage = translate(eventError.message);
+        printTextOnError(errorMessage, 3000);
+    }
+    finally {
+        SaldoComponent.renderizarSaldo();
+    }
 });
