@@ -1,24 +1,41 @@
 .block-nova-transacao {
-    height: 590px;
-    padding: 24px;
-    border-radius: 8px;
-    background-image: url('../../images/nova-transacao-bg1.png'), url('../../images/nova-transacao-bg2.png'), url('../../images/nova-transacao-bg3.png');
-    background-position: bottom left, bottom 23px right, top right;
-    background-repeat: no-repeat;
-    background-color: var(--cor-tercearia);
-    margin-top: 24px;
+  height: 590px;
+  padding: 24px;
+  border-radius: 8px;
+  background-image:
+    url('../../images/nova-transacao-bg1.png'),
+    url('../../images/nova-transacao-bg2.png'),
+    url('../../images/nova-transacao-bg3.png');
+  background-position:
+    bottom left,
+    bottom 23px right,
+    top right;
+  background-repeat: no-repeat;
+  background-color: var(--cor-tercearia);
+  margin-top: 24px;
 
-    & h2 {
-        font-size: var(--fonte-t1);
-        padding: 0;
-        margin-block: 0 32px;
-    }
+  & h2 {
+    font-size: var(--fonte-t1);
+    padding: 0;
+    margin-block: 0 32px;
+  }
 
-    & select#tipoTransacao {
-        width: 355px;
-    }
+  & select#tipoTransacao {
+    width: 355px;
+  }
 
-    @media (max-width: 950px) {
-        width: 100%;
-    }
+  @media (max-width: 950px) {
+    width: 100%;
+  }
 }
+.error {
+  display: flex;
+  text-shadow: 2px 0px 0px #5f0404;
+  color: var(--cor-error);
+  font-weight: 500;
+  margin-top: 1em;
+  margin-left: 2px;
+  letter-spacing: 0.12em;
+  flex-wrap: wrap;
+}
+
