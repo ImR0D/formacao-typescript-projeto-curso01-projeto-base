@@ -9,7 +9,9 @@
     "allowJs": false,
     "disableSizeLimit": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["./src/**/*"],
   "compileOnSave": true
