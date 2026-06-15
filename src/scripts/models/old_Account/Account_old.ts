@@ -113,8 +113,7 @@ const Account = {
   },
   transactionsGroup(): GroupTransaction[] {
     const gruposTransacoes: GroupTransaction[] = [];
-    const listaTransacoes: TransactionModel[] = data.transactions;
-    loadAccountData();
+    const listaTransacoes: TransactionModel[] = AccountHistory.AllTransactions;
 
     const transacoesOrdenadas: TransactionModel[] = listaTransacoes.sort(
       (t1, t2) => t2.date.getTime() - t1.date.getTime(),
@@ -182,14 +181,11 @@ const Account = {
     logDeposit(transaction);
     dataStoreAccount();
   },
-  async transaction(transaction: TransactionModel): Promise<void> {
+  transaction(transaction: TransactionModel): void {
     const performTransactionFn = performTransaction(transaction);
+    performTransactionFn();
     dataStoreAccount();
     this.transactionsGroup();
-    performTransactionFn();
-
-    let transactionGroup = await this.transactionsGroup();
-    console.log(transactionGroup);
   },
   history(): typeof AccountHistory {
     return AccountHistory;
