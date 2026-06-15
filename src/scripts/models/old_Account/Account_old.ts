@@ -52,6 +52,7 @@ AccountHistory.Withdraws = storedAccountTransactions.filter(
 
 let balance = data.account_balance ?? 0;
 function logWithdraw(transaction: TransactionModel): void {
+  transaction.value *= -1;
   AccountHistory.Withdraws.push(transaction);
 }
 function logDeposit(transaction: TransactionModel): void {

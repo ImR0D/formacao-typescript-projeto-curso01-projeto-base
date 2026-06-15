@@ -31,6 +31,7 @@ AccountHistory.Deposits = storedAccountTransactions.filter((t) => t.type === Tra
 AccountHistory.Withdraws = storedAccountTransactions.filter((t) => t.type !== TransactionType.Deposit);
 let balance = data.account_balance ?? 0;
 function logWithdraw(transaction) {
+    transaction.value *= -1;
     AccountHistory.Withdraws.push(transaction);
 }
 function logDeposit(transaction) {

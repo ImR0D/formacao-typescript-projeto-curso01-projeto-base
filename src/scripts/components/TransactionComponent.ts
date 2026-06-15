@@ -47,7 +47,7 @@ elementoFormulario.addEventListener('submit', function (event) {
     let tipoTransacao: TransactionType =
       inputTipoTransacao.value as TransactionType;
     let valor: number = inputValor.valueAsNumber;
-    let data: Date = new Date(inputData.value);
+    let data: Date = new Date(inputData.value + ' 00:00:00');
 
     const novaTransacao: TransactionModel = {
       type: tipoTransacao,
@@ -65,13 +65,4 @@ elementoFormulario.addEventListener('submit', function (event) {
     SaldoComponent.renderizarSaldo();
     ExtratoComponent.update();
   }
-});
-
-const elementoHistory = document.querySelector('#history') as HTMLElement;
-
-elementoHistory.addEventListener('click', () => {
-  console.log(Account.history());
-  SaldoComponent.renderizarSaldo();
-  ExtratoComponent.update();
-  Account.transactionsGroup();
 });
