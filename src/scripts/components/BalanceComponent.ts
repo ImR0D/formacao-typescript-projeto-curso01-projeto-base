@@ -1,6 +1,6 @@
 import ToCurrency from '../helper/ToCurrency.js';
 import ToDateFormat from '../helper/ToDateFormat.js';
-import Account from '../models/Account/Account.js';
+import Account from '../models/old_Account/Account_old.js';
 import { DateFormatLocale } from '../types/DateFormatLocale.js';
 
 const elementoSaldo = document.querySelector(
@@ -17,7 +17,8 @@ const SaldoComponent = {
       return;
     }
 
-    elementoSaldo.textContent = ToCurrency(Account.balance());
+    elementoSaldo.textContent =
+      ToCurrency(Account.balance()) ?? `${ToCurrency(0)}`;
 
     if (elementoDataAcesso != null) {
       const dataAcesso: Date = new Date();

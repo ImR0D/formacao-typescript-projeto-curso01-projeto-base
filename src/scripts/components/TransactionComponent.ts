@@ -1,6 +1,6 @@
 import translate from '../helper/Translation/Translate.js';
-import Account from '../models/Account/Account.js';
-import { Transaction } from '../types/Transaction.js';
+import Account from '../models/old_Account/Account_old.js';
+import { TransactionModel } from '../types/Transaction.js';
 import { TransactionType } from '../types/TransactionType.js';
 import SaldoComponent from './BalanceComponent.js';
 
@@ -48,7 +48,7 @@ elementoFormulario.addEventListener('submit', function (event) {
     let valor: number = inputValor.valueAsNumber;
     let data: Date = new Date(inputData.value);
 
-    const novaTransacao: Transaction = {
+    const novaTransacao: TransactionModel = {
       type: tipoTransacao,
       value: valor,
       date: data,
@@ -64,4 +64,11 @@ elementoFormulario.addEventListener('submit', function (event) {
   } finally {
     SaldoComponent.renderizarSaldo();
   }
+});
+
+const elementoHistory = document.querySelector('#history') as HTMLElement;
+
+elementoHistory.addEventListener('click', () => {
+  console.log(Account.history());
+  Account.transactionsGroup();
 });
