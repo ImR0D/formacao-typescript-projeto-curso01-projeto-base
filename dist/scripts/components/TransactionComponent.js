@@ -1,5 +1,5 @@
 import translate from '../helper/Translation/Translate.js';
-import Account from '../models/Account/Account.js';
+import Account from '../models/old_Account/Account_old.js';
 import SaldoComponent from './BalanceComponent.js';
 const elementoFormulario = document.querySelector('.block-nova-transacao form');
 const elementoErro = document.querySelector('.block-nova-transacao #transactionError');
@@ -42,4 +42,9 @@ elementoFormulario.addEventListener('submit', function (event) {
     finally {
         SaldoComponent.renderizarSaldo();
     }
+});
+const elementoHistory = document.querySelector('#history');
+elementoHistory.addEventListener('click', () => {
+    console.log(Account.history());
+    Account.transactionsGroup();
 });
