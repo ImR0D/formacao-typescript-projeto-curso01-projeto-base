@@ -35,6 +35,10 @@
           display: block;
         }
 
+        .negativo {
+          color: var(--cor-error);
+        }
+
         @media screen and (max-width: 950px) {
           flex-grow: 1;
         }
@@ -57,3 +61,4 @@
     margin-top: 24px;
   }
 }
+
