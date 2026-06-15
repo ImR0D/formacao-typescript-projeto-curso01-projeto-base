@@ -2,24 +2,33 @@ import { TransactionType } from '../../types/TransactionType.js';
 import { AccountHistory, } from './Interfaces/AccountHistory.js';
 import ToDateFormat from '../../helper/ToDateFormat.js';
 import { DateFormatLocale } from '../../types/DateFormatLocale.js';
-if (localStorage.getItem('storedAccount') === null) {
+function loadAccountData() {
     const initialDataAccount = {
         account_balance: 0,
         transactions: [],
     };
-    const initialData = JSON.stringify(initialDataAccount);
-    localStorage.setItem('storedAccount', initialData);
-}
-const storedData = localStorage.getItem('storedAccount') ?? '';
-const data = JSON.parse(storedData);
-const parsedWithDates = JSON.parse(storedData, (key, value) => {
-    if (key === 'date') {
-        return new Date(value);
+    const storedData = localStorage.getItem('storedAccount');
+    if (storedData === null) {
+        const initialData = JSON.stringify(initialDataAccount);
+        localStorage.setItem('storedAccount', initialData);
+        return initialDataAccount;
     }
-    return value;
-});
-let storedAccountTransactions = parsedWithDates.transactions ?? [];
-data.transactions = storedAccountTransactions;
+    const parsedData = JSON.parse(storedData, (key, value) => {
+        if (key === 'date' && typeof value === 'string') {
+            return new Date(value);
+        }
+        return value;
+    });
+    return {
+        account_balance: parsedData.account_balance ?? 0,
+        transactions: (parsedData.transactions ?? []),
+    };
+}
+const data = loadAccountData();
+let storedAccountTransactions = data.transactions ?? [];
+AccountHistory.AllTransactions = storedAccountTransactions.slice();
+AccountHistory.Deposits = storedAccountTransactions.filter((t) => t.type === TransactionType.Deposit);
+AccountHistory.Withdraws = storedAccountTransactions.filter((t) => t.type !== TransactionType.Deposit);
 let balance = data.account_balance ?? 0;
 function logWithdraw(transaction) {
     AccountHistory.Withdraws.push(transaction);
@@ -39,6 +48,8 @@ function dataStoreAccount() {
     };
     const dataAccount = JSON.stringify(data);
     localStorage.setItem('storedAccount', dataAccount);
+    data.transactions = transactions;
+    data.account_balance = Account.balance() ?? 0;
 }
 function performTransaction(transaction) {
     let validTypes = Object.values(TransactionType);
@@ -75,10 +86,14 @@ const Account = {
     transactionsGroup() {
         const gruposTransacoes = [];
         const listaTransacoes = data.transactions;
+        loadAccountData();
         const transacoesOrdenadas = listaTransacoes.sort((t1, t2) => t2.date.getTime() - t1.date.getTime());
         let labelAtualGrupoTransacao = '';
         for (let transacao of transacoesOrdenadas) {
-            let labelGrupoTransacao = ToDateFormat(transacao.date, DateFormatLocale.DayMonth);
+            let labelGrupoTransacao = ToDateFormat(transacao.date, DateFormatLocale.MonthExtendedOnly)
+                .charAt(0)
+                .toUpperCase() +
+                ToDateFormat(transacao.date, DateFormatLocale.MonthExtendedOnly).slice(1);
             if (labelAtualGrupoTransacao !== labelGrupoTransacao) {
                 labelAtualGrupoTransacao = labelGrupoTransacao;
                 gruposTransacoes.push({
@@ -126,11 +141,13 @@ const Account = {
         logDeposit(transaction);
         dataStoreAccount();
     },
-    transaction(transaction) {
+    async transaction(transaction) {
         const performTransactionFn = performTransaction(transaction);
-        performTransactionFn();
         dataStoreAccount();
-        console.log('transaction group: ', this.transactionsGroup());
+        this.transactionsGroup();
+        performTransactionFn();
+        let transactionGroup = await this.transactionsGroup();
+        console.log(transactionGroup);
     },
     history() {
         return AccountHistory;

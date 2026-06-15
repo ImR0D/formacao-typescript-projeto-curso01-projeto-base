@@ -9,31 +9,46 @@ import DataAccount from './DataAccount.js';
 import ToDateFormat from '../../helper/ToDateFormat.js';
 import { DateFormatLocale } from '../../types/DateFormatLocale.js';
 
-if (localStorage.getItem('storedAccount') === null) {
+function loadAccountData(): DataAccount {
   const initialDataAccount: DataAccount = {
     account_balance: 0,
     transactions: [],
   };
-  const initialData = JSON.stringify(initialDataAccount);
-  localStorage.setItem('storedAccount', initialData);
+
+  const storedData = localStorage.getItem('storedAccount');
+
+  if (storedData === null) {
+    const initialData = JSON.stringify(initialDataAccount);
+    localStorage.setItem('storedAccount', initialData);
+    return initialDataAccount;
+  }
+
+  const parsedData: DataAccount = JSON.parse(
+    storedData,
+    (key: string, value: unknown) => {
+      if (key === 'date' && typeof value === 'string') {
+        return new Date(value);
+      }
+      return value;
+    },
+  );
+
+  return {
+    account_balance: parsedData.account_balance ?? 0,
+    transactions: (parsedData.transactions ?? []) as TransactionModel[],
+  };
 }
-const storedData = localStorage.getItem('storedAccount') ?? '';
-const data: DataAccount = JSON.parse(storedData);
 
-const parsedWithDates: DataAccount = JSON.parse(
-  storedData,
-  (key: string, value: string) => {
-    if (key === 'date') {
-      return new Date(value);
-    }
-    return value;
-  },
+const data: DataAccount = loadAccountData();
+let storedAccountTransactions: TransactionModel[] = data.transactions ?? [];
+
+AccountHistory.AllTransactions = storedAccountTransactions.slice();
+AccountHistory.Deposits = storedAccountTransactions.filter(
+  (t) => t.type === TransactionType.Deposit,
 );
-
-let storedAccountTransactions: TransactionModel[] =
-  parsedWithDates.transactions ?? [];
-
-data.transactions = storedAccountTransactions;
+AccountHistory.Withdraws = storedAccountTransactions.filter(
+  (t) => t.type !== TransactionType.Deposit,
+);
 
 let balance = data.account_balance ?? 0;
 function logWithdraw(transaction: TransactionModel): void {
@@ -57,6 +72,8 @@ function dataStoreAccount() {
   const dataAccount = JSON.stringify(data);
 
   localStorage.setItem('storedAccount', dataAccount);
+  data.transactions = transactions;
+  data.account_balance = Account.balance() ?? 0;
 }
 
 function performTransaction(transaction: TransactionModel) {
@@ -97,6 +114,7 @@ const Account = {
   transactionsGroup(): GroupTransaction[] {
     const gruposTransacoes: GroupTransaction[] = [];
     const listaTransacoes: TransactionModel[] = data.transactions;
+    loadAccountData();
 
     const transacoesOrdenadas: TransactionModel[] = listaTransacoes.sort(
       (t1, t2) => t2.date.getTime() - t1.date.getTime(),
@@ -104,10 +122,13 @@ const Account = {
     let labelAtualGrupoTransacao: string = '';
 
     for (let transacao of transacoesOrdenadas) {
-      let labelGrupoTransacao: string = ToDateFormat(
-        transacao.date,
-        DateFormatLocale.DayMonth,
-      );
+      let labelGrupoTransacao: string =
+        ToDateFormat(transacao.date, DateFormatLocale.MonthExtendedOnly)
+          .charAt(0)
+          .toUpperCase() +
+        ToDateFormat(transacao.date, DateFormatLocale.MonthExtendedOnly).slice(
+          1,
+        );
 
       if (labelAtualGrupoTransacao !== labelGrupoTransacao) {
         labelAtualGrupoTransacao = labelGrupoTransacao;
@@ -161,11 +182,14 @@ const Account = {
     logDeposit(transaction);
     dataStoreAccount();
   },
-  transaction(transaction: TransactionModel): void {
+  async transaction(transaction: TransactionModel): Promise<void> {
     const performTransactionFn = performTransaction(transaction);
-    performTransactionFn();
     dataStoreAccount();
-    console.log('transaction group: ', this.transactionsGroup());
+    this.transactionsGroup();
+    performTransactionFn();
+
+    let transactionGroup = await this.transactionsGroup();
+    console.log(transactionGroup);
   },
   history(): typeof AccountHistory {
     return AccountHistory;
