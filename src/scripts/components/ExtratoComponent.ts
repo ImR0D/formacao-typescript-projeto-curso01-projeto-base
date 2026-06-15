@@ -2,6 +2,7 @@ import ToCurrency from '../helper/ToCurrency.js';
 import ToDateFormat from '../helper/ToDateFormat.js';
 import Account from '../models/old_Account/Account_old.js';
 import { DateFormatLocale } from '../types/DateFormatLocale.js';
+import { TransactionType } from '../types/TransactionType.js';
 
 const elementoRegistroTransacoesExtrato: HTMLElement = document.querySelector(
   '.extrato .registro-transacoes',
@@ -20,7 +21,11 @@ function renderizarExtrato(): void {
         <div class="transacao-item">
             <div class="transacao-info">
                 <span class="tipo">${transacao.type}</span>
-                <strong class="valor">${ToCurrency(transacao.value)}</strong>
+                <strong class="valor">${
+                  transacao.type != TransactionType.Deposit
+                    ? '-' + ToCurrency(transacao.value)
+                    : ToCurrency(transacao.value)
+                }</strong>
             </div>
             <time class="data">${ToDateFormat(transacao.date, DateFormatLocale.DayMonth)}</time>
         </div>
@@ -42,3 +47,10 @@ function renderizarExtrato(): void {
 
   elementoRegistroTransacoesExtrato.innerHTML = htmlRegistroTransacoes;
 }
+
+const ExtratoComponent = {
+  update(): void {
+    renderizarExtrato();
+  },
+};
+export default ExtratoComponent;

@@ -3,6 +3,7 @@ import Account from '../models/old_Account/Account_old.js';
 import { TransactionModel } from '../types/Transaction.js';
 import { TransactionType } from '../types/TransactionType.js';
 import SaldoComponent from './BalanceComponent.js';
+import ExtratoComponent from './ExtratoComponent.js';
 
 const elementoFormulario = document.querySelector(
   '.block-nova-transacao form',
@@ -59,10 +60,10 @@ elementoFormulario.addEventListener('submit', function (event) {
   } catch (error) {
     let eventError: Error = error as Error;
     let errorMessage = translate(eventError.message);
-
     printTextOnError(errorMessage, 3000);
   } finally {
     SaldoComponent.renderizarSaldo();
+    ExtratoComponent.update();
   }
 });
 
@@ -70,5 +71,7 @@ const elementoHistory = document.querySelector('#history') as HTMLElement;
 
 elementoHistory.addEventListener('click', () => {
   console.log(Account.history());
+  SaldoComponent.renderizarSaldo();
+  ExtratoComponent.update();
   Account.transactionsGroup();
 });

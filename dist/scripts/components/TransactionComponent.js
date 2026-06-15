@@ -1,6 +1,7 @@
 import translate from '../helper/Translation/Translate.js';
 import Account from '../models/old_Account/Account_old.js';
 import SaldoComponent from './BalanceComponent.js';
+import ExtratoComponent from './ExtratoComponent.js';
 const elementoFormulario = document.querySelector('.block-nova-transacao form');
 const elementoErro = document.querySelector('.block-nova-transacao #transactionError');
 const inputTipoTransacao = elementoFormulario.querySelector('.block-nova-transacao #tipoTransacao');
@@ -41,10 +42,13 @@ elementoFormulario.addEventListener('submit', function (event) {
     }
     finally {
         SaldoComponent.renderizarSaldo();
+        ExtratoComponent.update();
     }
 });
 const elementoHistory = document.querySelector('#history');
 elementoHistory.addEventListener('click', () => {
     console.log(Account.history());
+    SaldoComponent.renderizarSaldo();
+    ExtratoComponent.update();
     Account.transactionsGroup();
 });
