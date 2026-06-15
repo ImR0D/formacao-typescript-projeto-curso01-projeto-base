@@ -6,4 +6,5 @@ export var DateFormatLocale;
     DateFormatLocale["DateOnly"] = "DateOnly";
     DateFormatLocale["DateShort"] = "DateShort";
     DateFormatLocale["DayMonth"] = "DayMonth";
+    DateFormatLocale["MonthExtendedOnly"] = "MonthExtendedOnly";
 })(DateFormatLocale || (DateFormatLocale = {}));

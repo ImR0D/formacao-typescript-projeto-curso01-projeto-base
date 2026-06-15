@@ -42,6 +42,10 @@ const dateFormats = {
         hourCycle: 'h24',
         formatMatcher: 'best fit',
     },
+    MonthExtendedOnly: {
+        month: 'long',
+        formatMatcher: 'best fit',
+    },
 };
 export default function ToDateFormat(date, format) {
     const convDate = new Date(date);

@@ -6,6 +6,8 @@ import {
   IAccountHistory,
 } from './Interfaces/AccountHistory.js';
 import DataAccount from './DataAccount.js';
+import ToDateFormat from '../../helper/ToDateFormat.js';
+import { DateFormatLocale } from '../../types/DateFormatLocale.js';
 
 if (localStorage.getItem('storedAccount') === null) {
   const initialDataAccount: DataAccount = {
@@ -17,7 +19,8 @@ if (localStorage.getItem('storedAccount') === null) {
 }
 const storedData = localStorage.getItem('storedAccount') ?? '';
 const data: DataAccount = JSON.parse(storedData);
-const storedAccountTransactions: TransactionModel[] = JSON.parse(
+
+const parsedWithDates: DataAccount = JSON.parse(
   storedData,
   (key: string, value: string) => {
     if (key === 'date') {
@@ -26,6 +29,9 @@ const storedAccountTransactions: TransactionModel[] = JSON.parse(
     return value;
   },
 );
+
+let storedAccountTransactions: TransactionModel[] =
+  parsedWithDates.transactions ?? [];
 
 data.transactions = storedAccountTransactions;
 
@@ -89,34 +95,30 @@ const Account = {
     return balance;
   },
   transactionsGroup(): GroupTransaction[] {
-    // obter todas as variáveis que serão manipuladas;
-    const group: GroupTransaction[] = [];
-    const accountTransactions: TransactionModel[] = data.transactions;
+    const gruposTransacoes: GroupTransaction[] = [];
+    const listaTransacoes: TransactionModel[] = data.transactions;
 
-    // Agrupar todas as transações com base na data
-    type GroupTransactionsByDateType = {
-      year: number;
-      month: number;
-      day: number;
-      transaction: TransactionModel;
-    };
+    const transacoesOrdenadas: TransactionModel[] = listaTransacoes.sort(
+      (t1, t2) => t2.date.getTime() - t1.date.getTime(),
+    );
+    let labelAtualGrupoTransacao: string = '';
 
-    let transactionsGroup: GroupTransactionsByDateType[] = [];
+    for (let transacao of transacoesOrdenadas) {
+      let labelGrupoTransacao: string = ToDateFormat(
+        transacao.date,
+        DateFormatLocale.DayMonth,
+      );
 
-    console.log(accountTransactions);
-
-    // let temp: GroupTransactionsByDateType = {
-    //   year: element.date.getFullYear(),
-    //   month: element.date.getUTCMonth(),
-    //   day: element.date.getUTCDay(),
-    //   transaction: element,
-    // };
-
-    // transactionsGroup.push(temp);
-
-    console.log(transactionsGroup);
-
-    return group;
+      if (labelAtualGrupoTransacao !== labelGrupoTransacao) {
+        labelAtualGrupoTransacao = labelGrupoTransacao;
+        gruposTransacoes.push({
+          label: labelGrupoTransacao,
+          transactions: [],
+        });
+      }
+      gruposTransacoes.at(-1)?.transactions.push(transacao);
+    }
+    return gruposTransacoes;
   },
   withdraw(transaction: TransactionModel): void {
     let hasError = false;
@@ -163,6 +165,7 @@ const Account = {
     const performTransactionFn = performTransaction(transaction);
     performTransactionFn();
     dataStoreAccount();
+    console.log('transaction group: ', this.transactionsGroup());
   },
   history(): typeof AccountHistory {
     return AccountHistory;

@@ -5,4 +5,5 @@ export enum DateFormatLocale {
   DateOnly = 'DateOnly',
   DateShort = 'DateShort',
   DayMonth = 'DayMonth',
+  MonthExtendedOnly = 'MonthExtendedOnly',
 }
