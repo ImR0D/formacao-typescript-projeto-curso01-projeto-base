@@ -1,6 +1,6 @@
 import { TransactionType } from './TransactionType.js';
 
-export type Transaction = {
+export type TransactionModel = {
   type: TransactionType;
   value: number;
   date: Date;

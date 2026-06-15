@@ -1,9 +1,9 @@
-import { Transaction } from '../../types/Transaction';
+import { TransactionModel } from '../../../types/Transaction';
 
 export interface IAccountHistory {
-  AllTransactions: Transaction[];
-  Withdraws: Transaction[];
-  Deposits: Transaction[];
+  AllTransactions: TransactionModel[];
+  Withdraws: TransactionModel[];
+  Deposits: TransactionModel[];
   HasErrors: Function;
 }
 
