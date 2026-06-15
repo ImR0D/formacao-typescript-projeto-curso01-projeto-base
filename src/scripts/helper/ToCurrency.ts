@@ -1,6 +1,6 @@
-export default function ToCurrency(value: number): string | null {
+export default function ToCurrency(value: number): string {
   if (!value) {
-    return null;
+    return 'R$ 0,00';
   }
 
   return value.toLocaleString('pt-br', {
